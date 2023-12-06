@@ -2,9 +2,6 @@
 import 'package:flutter/material.dart';
 
 import 'dart:convert';
-import 'Hourlyforecast.dart';
-import 'DailyForecast.dart';
-import 'Placess.dart';
 import 'package:http/http.dart' as http;
 import 'Modeling/Weather.dart';
 class Home extends StatefulWidget {
@@ -20,7 +17,7 @@ class _HomeState extends State<Home> {
   late Future<Weather> cityfuture ;
   Future <Weather> getWeather ()async
   {
-    http.Response response= await http.get(Uri.parse("https://api.weatherapi.com/v1/current.json?key=38afbeab0e714cf4a3f160606232911&q=Hevron&aqi=no",));
+    http.Response response= await http.get(Uri.parse("http://api.weatherapi.com/v1/forecast.json?key=38afbeab0e714cf4a3f160606232911&q=Hevron&days=3&aqi=no&alerts=no",));
     if (response.statusCode==200)
     {
       var jsonobj = jsonDecode(response.body);

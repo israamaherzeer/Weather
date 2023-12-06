@@ -5,6 +5,7 @@ import 'Hourlyforecast.dart';
 import 'DailyForecast.dart';
 import 'Placess.dart';
 
+
 import 'Modeling/Cities.dart';
 
 void main() => runApp(const MyApp());
@@ -35,9 +36,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static  List<Widget> _widgetOptions = <Widget>[
     Home(),
-    PageTwo(),
-    PageThree(),
-    WeatherWidget(),
+    HoulyForecast(),
+    dailyForcaset(),
+    WeatherWidget (),
 
   ];
 
