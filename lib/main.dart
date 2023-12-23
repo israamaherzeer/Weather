@@ -1,14 +1,13 @@
 
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'Home.dart';
-import 'Hourlyforecast.dart';
-import 'DailyForecast.dart';
-import 'Placess.dart';
-
-
-import 'Modeling/Cities.dart';
-
-void main() => runApp(const MyApp());
+import 'Savelist.dart';
+import 'places.dart';
+import 'Hours/Hourssearch.dart';
+import 'Dayssearch.dart';
+import 'dbprovider.dart';
+void main() => runApp(  const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -16,33 +15,32 @@ class MyApp extends StatelessWidget {
   static const appTitle = 'Weather App';
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: appTitle,
-      home: MyHomePage(title: appTitle),
-    );
+    return ChangeNotifierProvider(create: (context)=> DatabaseProvider.db,
+      child:  MaterialApp(
+        title: appTitle,
+        home: MyHomePage(title: appTitle),
+      )
+      );
+
   }
 }
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({required this.title});
   final String title;
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   static  List<Widget> _widgetOptions = <Widget>[
     Home(),
-    HoulyForecast(),
-    dailyForcaset(),
-    WeatherWidget (),
+    places(),
+    DailyForecast(),
+    Hourssearch(),
 
   ];
-
-
 
 
 
@@ -55,40 +53,56 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(title: Text(widget.title),
+      actions: [
+        IconButton(
+            onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>Savecitylist ()));
+            },
+            icon: Icon(Icons.favorite)
+        )
+      ],
+      ),
       body: Center(
         child: _widgetOptions[_selectedIndex],
       ),
       drawer: Drawer(
+
         child: ListView(
+
           padding: EdgeInsets.zero,
+
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Colors.grey,
               ),
-              child: Text('Weather App'),
+              child: Text('Weather App' , style : TextStyle(  fontSize: 30),),
             ),
             ListTile(
-              title: const Text('Home'),
+              title: const Text('Home',style: TextStyle(  fontSize: 20,fontWeight:FontWeight.bold ),      ),
               selected: _selectedIndex == 0,
               onTap: () {
                 _onItemTapped(0);
                 Navigator.pop(context);
               },
             ),
+
             ListTile(
-              title: const Text('Hourly Forecast'),
+              title: const Text('Places',style: TextStyle(  fontSize: 20,fontWeight:FontWeight.bold ),),
               selected: _selectedIndex == 1,
               onTap: () {
-                // Update the state of the app
+
                 _onItemTapped(1);
 
                 Navigator.pop(context);
               },
             ),
+
+
+
             ListTile(
-              title: const Text('Daily  Forecast'),
+              title: const Text('Daily  Forecast',style: TextStyle(  fontSize: 20,fontWeight:FontWeight.bold ),),
               selected: _selectedIndex == 2,
               onTap: () {
 
@@ -98,16 +112,19 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
 
+
             ListTile(
-              title: const Text('Places'),
+              title: const Text('Hourly Forecast' , style: TextStyle( fontSize: 20,fontWeight:FontWeight.bold ),),
               selected: _selectedIndex == 3,
               onTap: () {
-
+                // Update the state of the app
                 _onItemTapped(3);
 
                 Navigator.pop(context);
               },
             ),
+
+
 
           ],
         ),
