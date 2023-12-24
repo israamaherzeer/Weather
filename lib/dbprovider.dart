@@ -54,12 +54,14 @@ class DatabaseProvider  extends ChangeNotifier {
     final db = await database;
     List<Map<String, dynamic>> results = await db.query('weathertabel', where: 'cityName = ? ', whereArgs: [weather.location.cityName]);
     return results.isNotEmpty;
+
   }
 
 
-  Future<int> insertweather(Weather weather) async {
+  Future<void> insertweather(Weather weather) async {
       final db = await database;
-      return await db.insert(tableName, weather.toMap());
+    await db.insert(tableName, weather.toMap());
+      notifyListeners();
     }
 
 
@@ -74,16 +76,17 @@ class DatabaseProvider  extends ChangeNotifier {
       return weatherlist ;
     }
 
-    Future<int> removeAll() async {
+    Future<void> removeAll() async {
       final db = await database;
-      return await db.delete(tableName);
+    await db.delete(tableName);
+      notifyListeners();
     }
 
-  Future<int> removeWeather(Weather weather) async {
+  Future<void> removeWeather(Weather weather) async {
     final db = await database;
-    return await db.delete('weathertabel', where: 'lat = ?', whereArgs: [weather.location.lat]);
-
-  }
+   await db.delete('weathertabel', where: 'lat = ?', whereArgs: [weather.location.lat]);
+  notifyListeners();
+}
 
 
 

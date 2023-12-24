@@ -19,22 +19,46 @@ class _SavecitylistState extends State<Savecitylist> {
           actions: [
           IconButton(
           onPressed: (){
-        //Navigator.push(context, MaterialPageRoute(builder: (context)=>Savecitylist ()));
-        DatabaseProvider.db.removeAll();
+
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    content: Text('Do you want to delete all the List ?' , style: TextStyle(fontSize: 30),),
+                    actions: [
+                      ElevatedButton(
+                          onPressed:(){
+                  DatabaseProvider.db.removeAll();
+                  setState(() {
+
+                  });
+                  Navigator.pop(context);
+                  }
+                  , child:Text('ok ')),
+                    ]
+
+                  );
+                },);
+
   },
     icon: Icon(Icons.delete)
     )
+
+
+
     ],
 
       ),
       body: Consumer<DatabaseProvider>(
-        builder: (context, value, _) {
+        builder: (context, value, child) {
           return FutureBuilder<List<Weather>>(
             future: DatabaseProvider.db.getAlWeather(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                print(snapshot.data);
+
                 List<Weather> weatherList = snapshot.data!;
+                if (weatherList!.isEmpty)
+                  return Center(child: Text('No item in the List'),);
                 return ListView.builder(
                   itemCount: weatherList.length,
                   itemBuilder: (context, index) {
@@ -44,7 +68,7 @@ class _SavecitylistState extends State<Savecitylist> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                // Remove the unintended code block and return the CircularProgressIndicator
+
                 return Center(
                   child: CircularProgressIndicator(),
                 );

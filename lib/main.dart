@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'Home.dart';
 import 'Savelist.dart';
 import 'places.dart';
-import 'Hours/Hourssearch.dart';
+import 'Hourssearch.dart';
 import 'Dayssearch.dart';
 import 'dbprovider.dart';
 void main() => runApp(  const MyApp());
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -38,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Home(),
     places(),
     DailyForecast(),
-    Hourssearch(),
+    HourlyForecast(),
 
   ];
 
@@ -60,7 +59,9 @@ class _MyHomePageState extends State<MyHomePage> {
             Navigator.push(context, MaterialPageRoute(builder: (context)=>Savecitylist ()));
             },
             icon: Icon(Icons.favorite)
-        )
+        ),
+
+
       ],
       ),
       body: Center(

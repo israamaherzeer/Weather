@@ -28,78 +28,23 @@ class _weathercityitemState extends State<weathercityitem> {
              padding: const EdgeInsets.all(7),
             child:  Row
               (
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children:
               [
                 Column(
-                  //  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Row(
+
                       children: [
-                        Text(widget.weather!.location.cityName,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20)),
+                        Text(widget.weather!.location.cityName,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25)),
 
                       ],
-                    ),
 
 
-                  ],
-                ),
-                Column(
-                  children:
-                  [
-                    Image.network('https:${widget.weather.current.condition.img}', height: 100, width: 150,),
-                    Row(
-                      children: [
-                        Text(' Temp :${widget.weather.current.temp_c.toString()}°C ' ,style: TextStyle(fontSize: 20) ),
-                      ],
-
-                    ),
-                    Row(
-                      children: [
-                        Text(widget.weather.current.condition.ConitionText,style: TextStyle(fontSize: 20), softWrap: true, ),
-                      ],
 
                     ),
 
-                  ],
-                ),
-                Column(
-                  children: [
-
-                    IconButton(
-
-                      onPressed: ()  async{
-
-                        bool exists = await DatabaseProvider.db.isWeatherItemExist( widget.weather);
-                        if (exists) {
-                          context.read<DatabaseProvider>().removeWeather(widget.weather);
-                        } else {
-                          context.read<DatabaseProvider>().insertweather(widget.weather);
-                        }
-
-                        setState(() {
-
-                        });
-                      },
-
-    icon: FutureBuilder<bool>(
-    future: context.watch<DatabaseProvider>().isWeatherItemExist(widget.weather),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return CircularProgressIndicator(); // or any other loading indicator
-      } else if (snapshot.hasError) {
-        return Text('Error: ${snapshot.error}');
-      } else {
-        return Transform.rotate(
-          angle: 0 * 3.1415927 / 180,
-          child: Icon(
-            snapshot.data ?? false ? Icons.delete: Icons.add,
-            size: 50,
-          ),
-        );
-      }
-    }
-    )),
                     FancyButton(button_text: "Details ",
                         button_height: 40,
                         button_width: 100,
@@ -118,11 +63,9 @@ class _weathercityitemState extends State<weathercityitem> {
                                 child: Column(
                                   children: [
 
-                                    Text('${widget.weather.location.cityName} in  ${widget.weather.location.country}', style: TextStyle(fontSize: 20), softWrap: true, ),
-                                    Text('The  temperature in degrees Fahrenheit is ${widget.weather.current.temp_f } f', style: TextStyle(fontSize: 20), softWrap: true, ),
-                                    Text ('The wind speed in kilometers per hour is ${widget.weather.current.wind_kph}kph and the wind direction is ${widget.weather.current.wind_dir} ', style: TextStyle(fontSize: 20), softWrap: true,),
-
-
+                                    Text('${widget.weather.location.cityName}  _  ${widget.weather.location.country} \n', style: TextStyle(fontSize: 20), softWrap: true, ),
+                                    Text('The  temperature in degrees Fahrenheit is ${widget.weather.current.temp_f } f\n', style: TextStyle(fontSize: 20), softWrap: true, ),
+                                    Text ('The wind speed  is ${widget.weather.current.wind_kph}kph and the wind direction is ${widget.weather.current.wind_dir} ', style: TextStyle(fontSize: 20), softWrap: true,),
 
 
                                   ],
@@ -147,10 +90,72 @@ class _weathercityitemState extends State<weathercityitem> {
 
                     )
                   ],
-                )
+                ),
+                Column(
+                  children:
+                  [
+                    Image.network('https:${widget.weather.current.condition.img}', height: 100, width: 150,),
+                    Row(
+                      children: [
+                        Text(' Temp :${widget.weather.current.temp_c.toString()}°C ' ,style: TextStyle(fontSize: 20) ),
+                      ],
+
+                    ),
+                    Row(
+                      children: [
+                        Text(widget.weather.current.condition.ConitionText,style: TextStyle(fontSize: 20), softWrap: true, ),
+                      ],
+
+                    ),
+
+                  ],
+                ),
 
 
-              ],
+
+                    IconButton(
+                      onPressed: ()  async{
+                        bool exists = await DatabaseProvider.db.isWeatherItemExist( widget.weather);
+                        if (exists) {
+                          context.read<DatabaseProvider>().removeWeather(widget.weather);
+                        } else {
+                          context.read<DatabaseProvider>().insertweather(widget.weather);
+                        }
+
+                        setState(() {
+
+                        });
+                      },
+
+    icon: Consumer<DatabaseProvider> (
+      builder: (context, value, child) {
+       return FutureBuilder<bool>(
+            future: context.watch<DatabaseProvider>().isWeatherItemExist(widget.weather),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+              else if (snapshot.hasData) {
+                return Transform.rotate(
+                  angle: 90 * 3.1415927 / 180,
+                  child: Icon(
+                    snapshot.data ?? false ? Icons.label: Icons.label_outline,
+                    size: 50,
+                  ),
+                );
+              }
+              else  {
+                return CircularProgressIndicator(); // or any other loading indicator
+              }
+            }
+        );
+      },
+
+    )),
+
+                  ],
+
+
 
             )
 

@@ -16,14 +16,10 @@ class _placesState extends State<places> {
   List<Weather> weatherList = [];
   late Future<List<Weather>> futureWeather;
 
-  @override
-  void initState() {
-    super.initState();
-    futureWeather=fetchData('cityName');
-  }
 
-  Future<List<Weather>> fetchData(String cityName) async {
 
+    Future<List<Weather>> fetchData(String cityName) async {
+    weatherList.clear();
       final response = await http.get(Uri.parse(
           "http://api.weatherapi.com/v1/forecast.json?key=38afbeab0e714cf4a3f160606232911&q=$cityName&days=3&aqi=no&alerts=no"));
       if (response.statusCode == 200) {
@@ -33,7 +29,11 @@ class _placesState extends State<places> {
       }
     return weatherList;
   }
-
+   @override
+   void initState() {
+     super.initState();
+     futureWeather=fetchData('cityName');
+   }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +75,8 @@ class _placesState extends State<places> {
                     return ListView.builder(
                       itemCount: weather?.length,
                       itemBuilder: (context, index) {
-                        return weathercityitem(weather: weather![index]);
+                        return SingleChildScrollView(
+                            child: weathercityitem(weather: weather![index]));
                       },
                     );
                   } else if (snapshot.hasError) {

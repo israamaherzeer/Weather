@@ -14,6 +14,10 @@ class _HomeState extends State<Home> {
    String cityName = 'jerusalem';
   Future<Weather> getWeather(String cityName) async
   {
+
+
+
+
     http.Response response= await http.get(Uri.parse("http://api.weatherapi.com/v1/forecast.json?key=38afbeab0e714cf4a3f160606232911&q=${cityName}&days=3&aqi=no&alerts=no",));
     if (response.statusCode==200)
     {
@@ -22,12 +26,11 @@ class _HomeState extends State<Home> {
       return city;
     }
     else {
-      throw Exception('can not access the ApI');
+      throw Exception('Unable to access API. Please check your internet connection and try again');
 
     }
 
   }
-
 
   void _saveCity(String cityName) async {
     final prefs = await SharedPreferences.getInstance();
@@ -36,17 +39,21 @@ class _HomeState extends State<Home> {
 
   void _loadCity() async {
     final prefs = await SharedPreferences.getInstance();
-    final savedCity = prefs.getString('city') ?? cityName; // Use default if not found
+    final savedCity = prefs.getString('city') ?? cityName;
     setState(() {
       cityName = savedCity;
       cityfuture = getWeather(savedCity);
     });
   }
+
+
+
+
   @override void initState() {
 
     super.initState();
-    cityfuture= getWeather(cityName);
     _loadCity();
+
   }
 
   void _showCityInput() {
@@ -55,10 +62,15 @@ class _HomeState extends State<Home> {
       builder: (context) => _CityInputSheet(),
     );
   }
+
   void _fetchWeatherForNewCity() async {
     cityName = _cityController.text;
-    cityfuture = getWeather(cityName);
-    _saveCity(cityName);
+    setState(() {
+      cityfuture = getWeather(cityName);
+
+      _saveCity(cityName);
+    });
+
   }
   Widget _CityInputSheet() {
     return Container(
@@ -85,8 +97,7 @@ class _HomeState extends State<Home> {
   }
   @override
   Widget build(BuildContext context) {
-    return
-      FutureBuilder(
+    return FutureBuilder(
           future: cityfuture,
           builder: (context, snapshot)
           {
@@ -125,24 +136,15 @@ class _HomeState extends State<Home> {
                          child: Icon(Icons.edit_location),
                        ),
                      ],
-
                    ),
-
                  )
-
                ),
-
-             )  ;
-          }
+             )  ;}
        else if  (snapshot.hasError)
            return Text('error ${snapshot.error}') ;
-       else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+       else {return const Center(child: CircularProgressIndicator(),);}
        },
-      );
+    );
 
 
 
